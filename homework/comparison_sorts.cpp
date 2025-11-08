@@ -274,10 +274,10 @@ int main() {
                 return a.time_seconds < b.time_seconds;
             });
         
-        cout << "\n🏆 Nhanh nhất: " << fastest->algorithm << " (" << fastest->type << ") - " 
+        cout << "\nNhanh nhất: " << fastest->algorithm << " (" << fastest->type << ") - " 
              << fixed << setprecision(6) << fastest->time_seconds << "s" << endl;
         
-        cout << "\n📊 Nhận xét:" << endl;
+        cout << "\nNhận xét:" << endl;
         cout << "• Bubble Sort: Chậm nhất, parallel không hiệu quả" << endl;
         cout << "• Merge Sort: Ổn định, parallel hiệu quả với mảng lớn" << endl;
         cout << "• Quick Sort: Nhanh nhất trung bình, parallel tốt" << endl;

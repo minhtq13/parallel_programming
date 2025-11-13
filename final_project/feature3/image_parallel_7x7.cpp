@@ -1,13 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <omp.h>
+#include <omp.h> // OpenMP cho xử lý song song
 
+// Thư viện xử lý ảnh
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-// Kernel 7x7 Gaussian Blur (cường độ tính toán cao)
+// Kernel 7x7 - Cường độ tính toán cao (49 phép tính/pixel)
 const double kernel_7x7[7][7] = {
     {0.00000067, 0.00002292, 0.00019117, 0.00038771, 0.00019117, 0.00002292, 0.00000067},
     {0.00002292, 0.00078633, 0.00655965, 0.01330373, 0.00655965, 0.00078633, 0.00002292},
@@ -39,14 +40,17 @@ int main(int argc, char *argv[]) {
 
     omp_set_num_threads(num_threads);
 
+    // Bắt đầu đo thời gian
     double start_time = omp_get_wtime();
 
-    // Áp dụng kernel 7x7 - Cường độ tính toán: 49 phép nhân + 49 phép cộng mỗi pixel
+    // Áp dụng kernel 7x7 song song (bỏ viền 3 pixel)
     #pragma omp parallel for schedule(static) collapse(2)
     for (int y = 3; y < height - 3; ++y) {
         for (int x = 3; x < width - 3; ++x) {
+            // Xử lý từng kênh màu
             for (int c = 0; c < channels; ++c) {
                 double sum = 0.0;
+                // Tính convolution với 49 pixel lân cận
                 for (int ky = -3; ky <= 3; ++ky) {
                     for (int kx = -3; kx <= 3; ++kx) {
                         unsigned char pixel_val = img[((y + ky) * width + (x + kx)) * channels + c];
@@ -58,11 +62,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // Kết thúc đo thời gian và in ra
     double end_time = omp_get_wtime();
     printf("%f\n", (end_time - start_time));
 
+    // Ghi ảnh kết quả
     stbi_write_jpg("output_7x7.jpg", width, height, channels, output_img, 100);
 
+    // Giải phóng bộ nhớ
     stbi_image_free(img);
     free(output_img);
 

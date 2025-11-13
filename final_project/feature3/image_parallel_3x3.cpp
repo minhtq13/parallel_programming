@@ -1,13 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <omp.h>
+#include <omp.h> // OpenMP cho xử lý song song
 
+// Thư viện xử lý ảnh
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-// Kernel 3x3 Gaussian Blur (cường độ tính toán thấp)
+// Kernel 3x3 - Cường độ tính toán thấp (9 phép tính/pixel)
 const double kernel_3x3[3][3] = {
     {1.0 / 16, 2.0 / 16, 1.0 / 16},
     {2.0 / 16, 4.0 / 16, 2.0 / 16},
@@ -35,14 +36,17 @@ int main(int argc, char *argv[]) {
 
     omp_set_num_threads(num_threads);
 
+    // Bắt đầu đo thời gian
     double start_time = omp_get_wtime();
 
-    // Áp dụng kernel 3x3 - Cường độ tính toán: 9 phép nhân + 9 phép cộng mỗi pixel
+    // Áp dụng kernel 3x3 song song
     #pragma omp parallel for schedule(static) collapse(2)
     for (int y = 1; y < height - 1; ++y) {
         for (int x = 1; x < width - 1; ++x) {
+            // Xử lý từng kênh màu
             for (int c = 0; c < channels; ++c) {
                 double sum = 0.0;
+                // Tính convolution với 9 pixel lân cận
                 for (int ky = -1; ky <= 1; ++ky) {
                     for (int kx = -1; kx <= 1; ++kx) {
                         unsigned char pixel_val = img[((y + ky) * width + (x + kx)) * channels + c];
@@ -54,11 +58,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // Kết thúc đo thời gian và in ra
     double end_time = omp_get_wtime();
     printf("%f\n", (end_time - start_time));
 
+    // Ghi ảnh kết quả
     stbi_write_jpg("output_3x3.jpg", width, height, channels, output_img, 100);
 
+    // Giải phóng bộ nhớ
     stbi_image_free(img);
     free(output_img);
 

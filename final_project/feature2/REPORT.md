@@ -11,18 +11,18 @@ Phân tích hiệu năng giữa `schedule(static)` và `schedule(dynamic)` trong
 
 ## 2. Kết quả Thực nghiệm
 
-**Thời gian chạy tuần tự (baseline):** 0.0139 giây
+**Thời gian chạy tuần tự (baseline):** 0.0086 giây
 
 ### So sánh chi tiết
 
 | Threads | Static Time (s) | Dynamic Time (s) | Static Speedup | Dynamic Speedup | Static vs Dynamic |
 |---------|-----------------|------------------|----------------|-----------------|-------------------|
-| 1       | 0.0217          | 0.0362           | 0.64          x | 0.38           x | 1.67  x (Static faster) |
-| 2       | 0.0095          | 0.0773           | 1.46          x | 0.18           x | 8.14  x (Static faster) |
-| 4       | 0.0114          | 0.0721           | 1.22          x | 0.19           x | 6.31  x (Static faster) |
-| 8       | 0.0043          | 0.1322           | 3.19          x | 0.11           x | 30.41 x (Static faster) |
-| 12      | 0.0045          | 0.1408           | 3.07          x | 0.10           x | 31.14 x (Static faster) |
-| 16      | 0.0045          | 0.1386           | 3.10          x | 0.10           x | 30.98 x (Static faster) |
+| 1       | 0.0114          | 0.0222           | 0.75          x | 0.39           x | 1.95  x (Static faster) |
+| 2       | 0.0053          | 0.0434           | 1.62          x | 0.20           x | 8.20  x (Static faster) |
+| 4       | 0.0038          | 0.0471           | 2.28          x | 0.18           x | 12.54 x (Static faster) |
+| 8       | 0.0027          | 0.0803           | 3.17          x | 0.11           x | 29.74 x (Static faster) |
+| 12      | 0.0025          | 0.0847           | 3.45          x | 0.10           x | 34.10 x (Static faster) |
+| 16      | 0.0026          | 0.0845           | 3.26          x | 0.10           x | 32.17 x (Static faster) |
 
 ![Schedule Comparison - Execution Time](schedule_time_comparison.png)
 ![Schedule Comparison - Speedup](schedule_speedup_comparison.png)
